@@ -3,7 +3,7 @@ package model
 import (
 	"bytes"
 	"errors"
-	"github.com/MadeonZedd/galaxy_log/common"
+	"github.com/trancer-nature/galaxy_log/common"
 	"io"
 	"io/ioutil"
 	"net/http"
