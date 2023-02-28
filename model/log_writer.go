@@ -111,7 +111,7 @@ func WithPermission(permission string) OptionFunc {
 	}
 }
 
-func getParam(r *http.Request) string {
+func GetParam(r *http.Request) string {
 	param := common.EmptyString
 	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodDelete {
 		if r.Body != nil {
