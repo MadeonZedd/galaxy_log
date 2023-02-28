@@ -26,7 +26,7 @@ type OptLog struct {
 	Rsp        Rsp    `json:"ret,omitempty"`
 }
 
-type Option func(*OptLog)
+type OptionFunc func(*OptLog)
 
 type Rsp struct {
 	State     int32       `json:"status,optional"`
@@ -45,6 +45,72 @@ func (w LogWriter) Write(p []byte) (int, error) {
 		return n, err
 	}
 	return w.ResponseWriter.Write(p)
+}
+
+func WithOpTime(time string) OptionFunc {
+	return func(log *OptLog) {
+		log.OpTime = time
+	}
+}
+
+func WithOpType(ty string) OptionFunc {
+	return func(log *OptLog) {
+		log.OpType = ty
+	}
+}
+
+func WithMethod(method string) OptionFunc {
+	return func(log *OptLog) {
+		log.Method = method
+	}
+}
+
+func WithIp(ip string) OptionFunc {
+	return func(log *OptLog) {
+		log.Ip = ip
+	}
+}
+
+func WithUrl(url string) OptionFunc {
+	return func(log *OptLog) {
+		log.Url = url
+	}
+}
+
+func WithCreated(created string) OptionFunc {
+	return func(log *OptLog) {
+		log.CreatedAt = created
+	}
+}
+
+func WithParam(param string) OptionFunc {
+	return func(log *OptLog) {
+		log.Param = param
+	}
+}
+
+func WithRsp(rsp Rsp) OptionFunc {
+	return func(log *OptLog) {
+		log.Rsp = rsp
+	}
+}
+
+func WithUser(user string) OptionFunc {
+	return func(log *OptLog) {
+		log.User = user
+	}
+}
+
+func WithCompany(company string) OptionFunc {
+	return func(log *OptLog) {
+		log.Company = company
+	}
+}
+
+func WithPermission(permission string) OptionFunc {
+	return func(log *OptLog) {
+		log.Permission = permission
+	}
 }
 
 func (w LogWriter) BaseInfo(r *http.Request) error {
@@ -89,4 +155,12 @@ func getParam(r *http.Request) string {
 		param = common.ToJsonString(values)
 	}
 	return param
+}
+
+func NewOptLog(module, trace string, opts ...OptionFunc) *OptLog {
+	op := &OptLog{Module: module, Trace: trace}
+	for _, opt := range opts {
+		opt(op)
+	}
+	return op
 }
