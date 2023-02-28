@@ -2,12 +2,10 @@ package model
 
 import (
 	"bytes"
-	"errors"
 	"github.com/trancer-nature/galaxy_log/common"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 type OptLog struct {
@@ -37,11 +35,11 @@ type Rsp struct {
 
 type LogWriter struct {
 	http.ResponseWriter
-	body *bytes.Buffer
+	Body *bytes.Buffer
 }
 
 func (w LogWriter) Write(p []byte) (int, error) {
-	if n, err := w.body.Write(p); err != nil {
+	if n, err := w.Body.Write(p); err != nil {
 		return n, err
 	}
 	return w.ResponseWriter.Write(p)
@@ -111,28 +109,6 @@ func WithPermission(permission string) OptionFunc {
 	return func(log *OptLog) {
 		log.Permission = permission
 	}
-}
-
-func (w LogWriter) BaseInfo(r *http.Request) error {
-	companyID := r.Header.Get(common.CompanyIDKey)
-	userID := r.Header.Get(common.UserIDKey)
-	permission := r.Header.Get(common.PermissionKey)
-
-	if companyID == common.EmptyString || userID == common.EmptyString {
-		return errors.New("header parameter error")
-	}
-
-	op := &OptLog{}
-	op.User = userID
-	op.Company = companyID
-	op.Permission = permission
-	op.Method = r.Method
-	op.Url = r.RequestURI
-	op.Ip = r.RemoteAddr
-	op.OpTime = time.Now().Format(common.TimeFormat)
-	op.Param = getParam(r)
-
-	return nil
 }
 
 func getParam(r *http.Request) string {
