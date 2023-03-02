@@ -2,7 +2,7 @@ package model
 
 import (
 	"bytes"
-	"github.com/trancer-nature/galaxy_log/common"
+	"github.com/trancer-nature/galaxy-common/util/format"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -112,7 +112,7 @@ func WithPermission(permission string) OptionFunc {
 }
 
 func GetParam(r *http.Request) string {
-	param := common.EmptyString
+	param := format.EmptyString
 	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodDelete {
 		if r.Body != nil {
 			buf := &bytes.Buffer{}
@@ -128,7 +128,7 @@ func GetParam(r *http.Request) string {
 	}
 	if r.Method == http.MethodGet {
 		values := r.URL.Query()
-		param = common.ToJsonString(values)
+		param = format.ToJsonString(values)
 	}
 	return param
 }
